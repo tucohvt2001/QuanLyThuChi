@@ -13,6 +13,7 @@ import budgetRoutes from './routes/budgetRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import debtRoutes from './routes/debtRoutes.js';
 import friendRoutes from './routes/friendRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import { pool } from './config/db.js';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerDocument } from './config/swagger.js';
@@ -33,6 +34,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/transactions', transactionRoutes);

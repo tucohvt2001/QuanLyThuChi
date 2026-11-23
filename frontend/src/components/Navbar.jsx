@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Plus, RefreshCw, Users, Tags } from 'lucide-react';
+import { Calendar, Plus, RefreshCw, Users, Tags, LogOut } from 'lucide-react';
 
 export const Navbar = ({ 
   title, 
@@ -10,7 +10,9 @@ export const Navbar = ({
   onRefresh,
   loading = false,
   activeTab,
-  setActiveTab
+  setActiveTab,
+  currentUser,
+  onLogout
 }) => {
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
   const years = [2024, 2025, 2026, 2027];
@@ -89,6 +91,15 @@ export const Navbar = ({
         >
           <Plus className="w-4 h-4" />
           <span>Ghi chép</span>
+        </button>
+
+        {/* Nút Đăng xuất */}
+        <button
+          onClick={onLogout}
+          title="Đăng xuất khỏi hệ thống"
+          className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors active:scale-95"
+        >
+          <LogOut className="w-4 h-4" />
         </button>
       </div>
     </header>

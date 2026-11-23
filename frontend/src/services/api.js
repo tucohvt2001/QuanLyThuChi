@@ -1,12 +1,19 @@
 const API_BASE = (import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api');
 
 async function request(endpoint, options = {}) {
+  const token = localStorage.getItem('thuchi_token');
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
     ...options,
+    headers,
   };
 
   if (config.body && typeof config.body === 'object') {
@@ -24,6 +31,11 @@ async function request(endpoint, options = {}) {
 }
 
 export const api = {
+  // Auth (Đăng nhập / Đăng xuất)
+  login: (credentials) => request('/auth/login', { method: 'POST', body: credentials }),
+  getMe: () => request('/auth/me'),
+  logout: () => request('/auth/logout', { method: 'POST' }),
+
   // Dashboard
   getDashboardSummary: (month, year) => {
     const params = new URLSearchParams();

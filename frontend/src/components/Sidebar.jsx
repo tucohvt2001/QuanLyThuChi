@@ -8,10 +8,11 @@ import {
   BarChart3,
   PlusCircle,
   HandCoins,
-  Users
+  Users,
+  LogOut
 } from 'lucide-react';
 
-export const Sidebar = ({ activeTab, setActiveTab, onOpenNewTx }) => {
+export const Sidebar = ({ activeTab, setActiveTab, onOpenNewTx, currentUser, onLogout }) => {
   const menuItems = [
     { id: 'dashboard', label: 'Tổng quan', icon: LayoutDashboard },
     { id: 'transactions', label: 'Sổ giao dịch', icon: ArrowLeftRight },
@@ -72,11 +73,31 @@ export const Sidebar = ({ activeTab, setActiveTab, onOpenNewTx }) => {
         })}
       </nav>
 
-      {/* Database Status Tag */}
-      <div className="mt-auto pt-4 border-t border-slate-100 px-3">
-        <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-50/60 border border-emerald-100 text-xs text-emerald-800">
+      {/* User profile & Logout */}
+      <div className="mt-auto pt-3 border-t border-slate-100">
+        <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100 mb-2">
+          <div className="flex items-center gap-2 truncate">
+            <div className="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
+              {(currentUser?.username || 'A')[0].toUpperCase()}
+            </div>
+            <div className="truncate">
+              <p className="text-xs font-bold text-slate-800 truncate">{currentUser?.name || 'Quản trị viên'}</p>
+              <p className="text-[10px] text-slate-400 font-mono truncate">@{currentUser?.username || 'admin'}</p>
+            </div>
+          </div>
+          <button
+            onClick={onLogout}
+            title="Đăng xuất"
+            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors shrink-0"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Database Status Tag */}
+        <div className="flex items-center gap-2 p-2 rounded-lg bg-emerald-50/60 border border-emerald-100 text-[11px] text-emerald-800">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="font-medium truncate">Neon PostgreSQL Connected</span>
+          <span className="font-medium truncate">Neon DB Connected</span>
         </div>
       </div>
     </aside>

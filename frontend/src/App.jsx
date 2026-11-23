@@ -19,10 +19,25 @@ import { CategoriesPage } from './pages/CategoriesPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { DebtsPage } from './pages/DebtsPage';
 import { FriendsPage } from './pages/FriendsPage';
+import { LoginPage } from './pages/LoginPage';
 
 import { api } from './services/api';
 
 export default function App() {
+  // Auth state
+  const [currentUser, setCurrentUser] = useState(() => {
+    const saved = localStorage.getItem('thuchi_user');
+    const token = localStorage.getItem('thuchi_token');
+    if (saved && token) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  });
+
   const now = new Date();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [currentMonth, setCurrentMonth] = useState(now.getMonth() + 1);
@@ -84,8 +99,23 @@ export default function App() {
   }, [currentMonth, currentYear]);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    if (currentUser) {
+      loadData();
+    }
+  }, [currentUser, loadData]);
+
+  const handleLogout = async () => {
+    if (window.confirm('Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?')) {
+      try {
+        await api.logout();
+      } catch (e) {
+        console.error(e);
+      }
+      localStorage.removeItem('thuchi_token');
+      localStorage.removeItem('thuchi_user');
+      setCurrentUser(null);
+    }
+  };
 
   // Handlers for Transactions
   const handleOpenNewTx = () => {
@@ -228,6 +258,11 @@ export default function App() {
     }
   };
 
+  // Nếu chưa đăng nhập, hiển thị trang Đăng nhập
+  if (!currentUser) {
+    return <LoginPage onLoginSuccess={(user) => setCurrentUser(user)} />;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row text-slate-900">
       {/* Desktop Sidebar */}
@@ -235,6 +270,8 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenNewTx={handleOpenNewTx}
+        currentUser={currentUser}
+        onLogout={handleLogout}
       />
 
       {/* Main Content Area */}
@@ -252,6 +289,8 @@ export default function App() {
           loading={loading}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          currentUser={currentUser}
+          onLogout={handleLogout}
         />
 
         <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto">

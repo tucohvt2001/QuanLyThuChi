@@ -20,6 +20,7 @@ export const swaggerDocument = {
     }
   ],
   tags: [
+    { name: 'Auth', description: 'Xác thực người dùng & Đăng nhập (Mặc định: admin / admin@123)' },
     { name: 'Health', description: 'Kiểm tra trạng thái hệ thống & Neon PostgreSQL' },
     { name: 'Dashboard', description: 'Dữ liệu tổng quan tài chính, tài sản ròng & biểu đồ' },
     { name: 'Transactions', description: 'Ghi chép thu, chi và chuyển khoản giữa các ví' },
@@ -30,6 +31,56 @@ export const swaggerDocument = {
     { name: 'Budgets', description: 'Hạn mức ngân sách chi tiêu hàng tháng' }
   ],
   paths: {
+    '/auth/login': {
+      post: {
+        tags: ['Auth'],
+        summary: 'Đăng nhập hệ thống (Mặc định: admin / admin@123)',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['username', 'password'],
+                properties: {
+                  username: { type: 'string', example: 'admin' },
+                  password: { type: 'string', example: 'admin@123' }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: 'Đăng nhập thành công',
+            content: {
+              'application/json': {
+                example: {
+                  success: true,
+                  message: 'Đăng nhập thành công',
+                  token: 'a1b2c3d4e5...',
+                  user: { username: 'admin', name: 'Quản trị viên', role: 'ADMIN' }
+                }
+              }
+            }
+          },
+          401: {
+            description: 'Sai tên đăng nhập hoặc mật khẩu'
+          }
+        }
+      }
+    },
+    '/auth/me': {
+      get: {
+        tags: ['Auth'],
+        summary: 'Lấy thông tin người dùng đang đăng nhập',
+        responses: {
+          200: {
+            description: 'Thông tin tài khoản'
+          }
+        }
+      }
+    },
     '/health': {
       get: {
         tags: ['Health'],
