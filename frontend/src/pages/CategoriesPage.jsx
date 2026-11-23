@@ -71,7 +71,7 @@ export const CategoriesPage = ({
               className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs hover:border-slate-300 transition-all flex flex-col items-center text-center group relative"
             >
               {/* Action buttons (top right) */}
-              <div className="absolute top-2 right-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-2 right-2 flex items-center gap-0.5 opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => onOpenEditCategory(cat)}
                   className="p-1 rounded-md text-slate-400 hover:text-emerald-600 hover:bg-emerald-50"

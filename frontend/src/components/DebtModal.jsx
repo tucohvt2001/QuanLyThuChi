@@ -5,14 +5,14 @@ import {
   Phone, 
   Calendar, 
   Wallet, 
-  FileText, 
-  ArrowDownLeft, 
-  ArrowUpRight, 
-  Users,
-  CheckCircle2,
-  Info,
-  BookOpen,
-  Loader2
+  Users, 
+  Info, 
+  BookOpen, 
+  Loader2,
+  HandCoins,
+  Receipt,
+  PlusCircle,
+  MinusCircle
 } from 'lucide-react';
 import { formatVND, formatNumberWithDots, parseNumberFromDots } from '../utils/formatters';
 
@@ -20,7 +20,8 @@ export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [],
   if (!isOpen) return null;
 
   const [type, setType] = useState('LOAN'); // 'LOAN': Cho vay (Người khác nợ tôi), 'DEBT': Đi vay (Tôi nợ người khác)
-  const [recordMethod, setRecordMethod] = useState('WALLET'); // 'WALLET': Giao dịch tiền qua ví, 'RECORD_ONLY': Chỉ ghi sổ theo dõi
+  const [recordMethod, setRecordMethod] = useState('RECORD_ONLY'); // MẶC ĐỊNH: Chỉ ghi sổ theo dõi nợ, không tự động cộng/trừ ví
+  const [walletAction, setWalletAction] = useState('PLUS'); // 'PLUS' | 'MINUS' (dành riêng khi Đi vay và chọn qua ví)
   const [personName, setPersonName] = useState('');
   const [phone, setPhone] = useState('');
   const [friendId, setFriendId] = useState('');
@@ -43,10 +44,11 @@ export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [],
       setStartDate(editingDebt.start_date ? new Date(editingDebt.start_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
       setDueDate(editingDebt.due_date ? new Date(editingDebt.due_date).toISOString().split('T')[0] : '');
       setNote(editingDebt.note || '');
-      setRecordMethod('RECORD_ONLY'); // Khi sửa thì mặc định chỉ cập nhật thông tin sổ nợ
+      setRecordMethod('RECORD_ONLY'); // Khi sửa thì chỉ cập nhật thông tin sổ nợ
     } else {
       setType('LOAN');
-      setRecordMethod('WALLET');
+      setRecordMethod('RECORD_ONLY'); // Mặc định luôn là chỉ ghi sổ nợ an toàn
+      setWalletAction('PLUS');
       setPersonName('');
       setPhone('');
       setFriendId('');
@@ -102,7 +104,8 @@ export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [],
         start_date: startDate,
         due_date: dueDate || null,
         note: note.trim(),
-        create_transaction: recordMethod === 'WALLET'
+        create_transaction: recordMethod === 'WALLET',
+        wallet_action: type === 'DEBT' ? walletAction : 'MINUS'
       });
       onClose();
     } catch (err) {
@@ -113,140 +116,207 @@ export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [],
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
       <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div>
-            <h3 className="font-bold text-lg text-slate-800">
+            <h3 className="font-bold text-base sm:text-lg text-slate-800">
               {editingDebt ? 'Chỉnh sửa khoản nợ' : 'Ghi chép Khoản Vay & Nợ'}
             </h3>
-            <p className="text-xs text-slate-500">Quản lý nợ tách riêng khỏi Chi tiêu & Thu nhập</p>
+            <p className="text-xs text-slate-500">Quản lý nợ tách riêng biệt khỏi Chi tiêu & Thu nhập</p>
           </div>
-          <button onClick={onClose} className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100">
+          <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-5 overflow-y-auto space-y-4 flex-1">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1">
           {error && (
-            <div className="p-3 bg-red-50 text-red-600 rounded-xl text-sm font-medium border border-red-100">
+            <div className="p-3 bg-red-50 text-red-600 rounded-xl text-xs sm:text-sm font-medium border border-red-100">
               {error}
             </div>
           )}
 
           {/* 1. Chọn Bản chất Khoản nợ: Cho vay vs Đi vay */}
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5">Loại nghiệp vụ</label>
+            <label className="block text-xs font-semibold text-slate-500 mb-1.5">Bản chất nghiệp vụ nợ</label>
             <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
               <button
                 type="button"
                 disabled={!!editingDebt}
                 onClick={() => setType('LOAN')}
-                className={`py-2.5 px-3 rounded-lg text-xs md:text-sm font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-2.5 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all ${
                   type === 'LOAN'
-                    ? 'bg-purple-600 text-white shadow-sm'
+                    ? 'bg-purple-600 text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <ArrowDownLeft className="w-4 h-4" />
-                <span>Cho vay (Cần đòi)</span>
+                <HandCoins className="w-4 h-4 shrink-0" />
+                <span className="truncate">Cho vay (Người nợ tôi)</span>
               </button>
 
               <button
                 type="button"
                 disabled={!!editingDebt}
                 onClick={() => setType('DEBT')}
-                className={`py-2.5 px-3 rounded-lg text-xs md:text-sm font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                className={`py-2.5 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all ${
                   type === 'DEBT'
-                    ? 'bg-amber-600 text-white shadow-sm'
+                    ? 'bg-amber-600 text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <ArrowUpRight className="w-4 h-4" />
-                <span>Đi vay (Cần trả)</span>
+                <Receipt className="w-4 h-4 shrink-0" />
+                <span className="truncate">Đi vay (Tôi nợ người khác)</span>
               </button>
             </div>
           </div>
 
-          {/* 2. Tách riêng Phương thức phát sinh (Rất quan trọng cho nghiệp vụ) */}
+          {/* 2. Phương thức ghi nhận: Chỉ ghi sổ nợ (Khuyên dùng) vs Qua Ví */}
           {!editingDebt && (
-            <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1.5">Phương thức phát sinh nợ</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setRecordMethod('WALLET')}
-                  className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all ${
-                    recordMethod === 'WALLET'
-                      ? 'border-purple-600 bg-purple-50/50 ring-2 ring-purple-600/20'
-                      : 'border-slate-200 hover:bg-slate-50'
-                  }`}
-                >
-                  <div className="flex items-center gap-1.5">
-                    <Wallet className={`w-4 h-4 ${recordMethod === 'WALLET' ? 'text-purple-600' : 'text-slate-500'}`} />
-                    <span className="text-xs font-bold text-slate-800">Giao dịch qua Ví</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 leading-tight">
-                    {type === 'LOAN' ? 'Rút tiền ví đưa cho vay' : 'Nhận tiền vào ví từ người cho vay'}
-                  </p>
-                </button>
-
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-slate-500">Tác động đến số dư ví tiền</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {/* Lựa chọn 1: Chỉ ghi sổ nợ (MẶC ĐỊNH & KHUYÊN DÙNG) */}
                 <button
                   type="button"
                   onClick={() => setRecordMethod('RECORD_ONLY')}
                   className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all ${
                     recordMethod === 'RECORD_ONLY'
-                      ? 'border-purple-600 bg-purple-50/50 ring-2 ring-purple-600/20'
+                      ? 'border-purple-600 bg-purple-50/50 ring-2 ring-purple-600/20 shadow-xs'
+                      : 'border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <BookOpen className={`w-4 h-4 ${recordMethod === 'RECORD_ONLY' ? 'text-purple-600' : 'text-slate-500'}`} />
+                      <span className="text-xs font-bold text-slate-800">Chỉ ghi sổ theo dõi nợ</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                      Khuyên dùng
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 leading-tight mt-0.5">
+                    Số dư ví <strong>giữ nguyên 100%</strong>. Phù hợp nợ ăn uống, mua hàng bạn trả hộ, nợ cũ...
+                  </p>
+                </button>
+
+                {/* Lựa chọn 2: Giao dịch có tiền thật qua ví */}
+                <button
+                  type="button"
+                  onClick={() => setRecordMethod('WALLET')}
+                  className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all ${
+                    recordMethod === 'WALLET'
+                      ? 'border-purple-600 bg-purple-50/50 ring-2 ring-purple-600/20 shadow-xs'
                       : 'border-slate-200 hover:bg-slate-50'
                   }`}
                 >
                   <div className="flex items-center gap-1.5">
-                    <BookOpen className={`w-4 h-4 ${recordMethod === 'RECORD_ONLY' ? 'text-purple-600' : 'text-slate-500'}`} />
-                    <span className="text-xs font-bold text-slate-800">Chỉ ghi sổ nợ</span>
+                    <Wallet className={`w-4 h-4 ${recordMethod === 'WALLET' ? 'text-purple-600' : 'text-slate-500'}`} />
+                    <span className="text-xs font-bold text-slate-800">Giao dịch qua Ví tiền</span>
                   </div>
-                  <p className="text-[11px] text-slate-500 leading-tight">
-                    Chi hộ, ăn uống share bill, nợ cũ... Không đổi tiền ví
+                  <p className="text-[11px] text-slate-500 leading-tight mt-0.5">
+                    {type === 'LOAN' ? 'Trích tiền từ ví đưa cho vay (-)' : 'Thực tế tiền đã chuyển vào hoặc trừ ví'}
                   </p>
                 </button>
               </div>
 
-              {/* Thông báo nghiệp vụ chuẩn */}
-              <div className="mt-2 p-2.5 rounded-xl bg-blue-50/70 border border-blue-100 flex items-start gap-2 text-[11px] text-blue-800">
+              {/* Giải thích nghiệp vụ & Tùy chọn nâng cao khi chọn Qua Ví */}
+              {recordMethod === 'WALLET' && (
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-3 animate-fadeIn">
+                  {type === 'LOAN' ? (
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">
+                        Trích tiền từ ví đưa cho vay (Số dư ví sẽ giảm) *
+                      </label>
+                      <select
+                        value={accountId}
+                        onChange={(e) => setAccountId(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-medium focus:border-purple-500 outline-none bg-white"
+                      >
+                        {accounts.map(acc => (
+                          <option key={acc.id} value={acc.id}>
+                            {acc.name} ({formatVND(acc.balance)})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <label className="block text-xs font-semibold text-slate-700">
+                        Chọn cách thay đổi số dư ví khi Đi vay:
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setWalletAction('PLUS')}
+                          className={`p-2.5 rounded-lg border text-left text-xs transition-all flex items-start gap-2 ${
+                            walletAction === 'PLUS'
+                              ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-bold'
+                              : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                          }`}
+                        >
+                          <PlusCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                          <div>
+                            <span>+ Cộng tiền vào ví</span>
+                            <p className="text-[10px] font-normal text-slate-500 mt-0.5">
+                              Người cho vay đã đưa tiền mặt/chuyển khoản vào tài khoản của bạn
+                            </p>
+                          </div>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setWalletAction('MINUS')}
+                          className={`p-2.5 rounded-lg border text-left text-xs transition-all flex items-start gap-2 ${
+                            walletAction === 'MINUS'
+                              ? 'border-orange-600 bg-orange-50 text-orange-900 font-bold'
+                              : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                          }`}
+                        >
+                          <MinusCircle className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
+                          <div>
+                            <span>- Trừ tiền ví ngay</span>
+                            <p className="text-[10px] font-normal text-slate-500 mt-0.5">
+                              Tính khoản nợ này trừ thẳng vào số dư ví của bạn
+                            </p>
+                          </div>
+                        </button>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">
+                          Ví / Tài khoản áp dụng *
+                        </label>
+                        <select
+                          value={accountId}
+                          onChange={(e) => setAccountId(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-medium focus:border-purple-500 outline-none bg-white"
+                        >
+                          {accounts.map(acc => (
+                            <option key={acc.id} value={acc.id}>
+                              {acc.name} ({formatVND(acc.balance)})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Thông báo hướng dẫn ngắn gọn */}
+              <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-100 flex items-start gap-2 text-[11px] text-blue-800">
                 <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                 <div>
-                  {recordMethod === 'WALLET' ? (
-                    type === 'LOAN' ? (
-                      <span>Số dư ví được chọn sẽ <strong>giảm đi</strong>, nhưng được hạch toán là <strong>Cho vay (Khoản phải thu)</strong>, <strong>KHÔNG</strong> bị tính vào Báo cáo Chi tiêu của tháng.</span>
-                    ) : (
-                      <span>Số dư ví được chọn sẽ <strong>tăng lên</strong>, nhưng được hạch toán là <strong>Đi vay (Nợ phải trả)</strong>, <strong>KHÔNG</strong> bị tính vào Báo cáo Thu nhập của tháng.</span>
-                    )
+                  {recordMethod === 'RECORD_ONLY' ? (
+                    <span>Khoản vay nợ sẽ được lưu vào <strong>Sổ Vay & Nợ</strong> để quản lý, tính hạn trả. <strong>Số dư ví hoàn toàn giữ nguyên</strong> không bị cộng trừ.</span>
                   ) : (
-                    <span>Chỉ ghi chép vào Sổ Nợ để theo dõi và nhắc hẹn trả. <strong>Số dư các ví tiền hoàn toàn giữ nguyên</strong> (chuẩn nghiệp vụ trả hộ / nợ cũ).</span>
+                    <span>Giao dịch này được hạch toán tách biệt với Thu chi thông thường, <strong>KHÔNG</strong> làm sai lệch Báo cáo Thu nhập / Chi tiêu của tháng.</span>
                   )}
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Chọn ví nếu là giao dịch tiền qua ví */}
-          {!editingDebt && recordMethod === 'WALLET' && (
-            <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1.5">
-                {type === 'LOAN' ? 'Trích tiền từ ví (Cho vay)' : 'Nhận tiền vào ví (Đi vay)'} *
-              </label>
-              <select
-                value={accountId}
-                onChange={(e) => setAccountId(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-medium focus:border-purple-500 outline-none bg-white"
-              >
-                {accounts.map(acc => (
-                  <option key={acc.id} value={acc.id}>
-                    {acc.name} ({formatVND(acc.balance)})
-                  </option>
-                ))}
-              </select>
             </div>
           )}
 
@@ -283,7 +353,7 @@ export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [],
                 <input
                   type="text"
                   required
-                  placeholder={type === 'LOAN' ? 'Tên người vay tiền' : 'Tên chủ nợ'}
+                  placeholder={type === 'LOAN' ? 'Tên người vay' : 'Tên chủ nợ'}
                   value={personName}
                   onChange={(e) => setPersonName(e.target.value)}
                   className="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-purple-500 outline-none"
@@ -318,13 +388,13 @@ export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [],
                 placeholder="0"
                 value={amount}
                 onChange={(e) => setAmount(formatNumberWithDots(e.target.value))}
-                className="w-full text-2xl font-bold px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 focus:border-purple-500 outline-none"
+                className="w-full text-xl sm:text-2xl font-bold px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 focus:border-purple-500 outline-none"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">₫</span>
             </div>
-            {amount && !isNaN(amount) && parseFloat(amount) > 0 && (
+            {amount && parseNumberFromDots(amount) > 0 && (
               <p className="text-xs text-slate-500 mt-1 font-medium">
-                Bằng chữ / định dạng: {formatVND(parseFloat(amount))}
+                Bằng số: <strong>{formatVND(parseNumberFromDots(amount))}</strong>
               </p>
             )}
           </div>
@@ -332,7 +402,7 @@ export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [],
           {/* Ngày bắt đầu & Ngày hẹn trả */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1.5">Ngày vay / ghi nợ</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5">Ngày phát sinh nợ</label>
               <input
                 type="date"
                 value={startDate}
@@ -354,10 +424,10 @@ export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [],
 
           {/* Ghi chú */}
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1.5">Ghi chú lý do nợ</label>
+            <label className="block text-xs font-semibold text-slate-500 mb-1.5">Ghi chú mục đích / nội dung nợ</label>
             <input
               type="text"
-              placeholder="VD: Mượn mua xe, trả tiền cơm trưa, mua quà hộ..."
+              placeholder="VD: Mượn mua đồ, trả tiền cơm trưa, mua quà hộ..."
               value={note}
               onChange={(e) => setNote(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-purple-500 outline-none"

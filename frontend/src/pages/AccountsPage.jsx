@@ -31,7 +31,7 @@ export const AccountsPage = ({
       <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 md:p-8 text-white shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold">Tổng tài sản khả dụng</span>
-          <h2 className="text-2xl md:text-4xl font-black mt-1 tracking-tight text-white">
+          <h2 className="text-2xl md:text-4xl font-black mt-1 tracking-tight text-white truncate">
             {formatVND(totalBalance)}
           </h2>
           <p className="text-xs text-slate-400 mt-1">Được quản lý trong {accounts.length} ví & tài khoản</p>
@@ -75,14 +75,14 @@ export const AccountsPage = ({
                   >
                     <DynamicIcon name={acc.icon} className="w-6 h-6" />
                   </div>
-                  <div>
-                    <h3 className="font-bold text-slate-800 text-base">{acc.name}</h3>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-slate-800 text-sm sm:text-base truncate max-w-[140px] sm:max-w-none">{acc.name}</h3>
                     <span className="text-xs text-slate-400 capitalize">{acc.type.toLowerCase()}</span>
                   </div>
                 </div>
 
                 {/* Actions button */}
-                <div className="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                   <button
                     onClick={() => onOpenEditAccount(acc)}
                     title="Chỉnh sửa ví"

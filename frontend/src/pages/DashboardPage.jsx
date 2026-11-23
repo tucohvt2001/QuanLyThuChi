@@ -61,89 +61,97 @@ export const DashboardPage = ({
   return (
     <div className="space-y-6 animate-fadeIn pb-safe-nav md:pb-8">
       {/* 1. Header 4 Thẻ Thống kê Tài chính Trắng Sáng Tinh Tế */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         {/* Tổng tài sản ròng & Số dư */}
-        <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tổng số dư ví</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <Wallet className="w-4 h-4" />
+        <div className="bg-white p-3 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <span className="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider truncate">Tổng số dư ví</span>
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </div>
             </div>
+            <p className="text-base sm:text-2xl font-black text-slate-800 tracking-tight truncate">
+              {formatVND(totalBalance)}
+            </p>
           </div>
-          <p className="text-lg md:text-2xl font-black text-slate-800 tracking-tight">
-            {formatVND(totalBalance)}
-          </p>
-          <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500 font-medium">
-            <span>{accounts.length} ví</span>
-            <span className="text-purple-600 font-semibold" title="Đã bù trừ nợ cần thu và nợ cần trả">
-              Tài sản ròng: {formatVND(netWorth || totalBalance)}
+          <div className="mt-2 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-500 font-medium pt-1 border-t border-slate-100 gap-1">
+            <span className="shrink-0">{accounts.length} ví</span>
+            <span className="text-purple-600 font-semibold truncate" title="Đã bù trừ nợ cần thu và nợ cần trả">
+              Ròng: {formatVND(netWorth || totalBalance)}
             </span>
           </div>
         </div>
 
         {/* Thu nhập tháng này */}
-        <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Thu tháng này</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <ArrowDownRight className="w-4 h-4" />
+        <div className="bg-white p-3 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <span className="text-[10px] sm:text-xs font-semibold text-emerald-600 uppercase tracking-wider truncate">Thu tháng này</span>
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <ArrowDownRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </div>
             </div>
+            <p className="text-base sm:text-2xl font-black text-emerald-600 tracking-tight truncate">
+              +{formatVND(thisMonthIncome)}
+            </p>
           </div>
-          <p className="text-lg md:text-2xl font-black text-emerald-600 tracking-tight">
-            +{formatVND(thisMonthIncome)}
-          </p>
-          <div className="mt-2 flex items-center gap-1 text-xs">
+          <div className="mt-2 flex items-center gap-1 text-[10px] sm:text-xs pt-1 border-t border-slate-100 truncate">
             {growth.incomeGrowth >= 0 ? (
-              <span className="text-emerald-600 font-semibold flex items-center">
-                <TrendingUp className="w-3.5 h-3.5 mr-0.5" /> +{growth.incomeGrowth}%
+              <span className="text-emerald-600 font-semibold flex items-center shrink-0">
+                <TrendingUp className="w-3 h-3 mr-0.5" /> +{growth.incomeGrowth}%
               </span>
             ) : (
-              <span className="text-red-500 font-semibold flex items-center">
-                <TrendingDown className="w-3.5 h-3.5 mr-0.5" /> {growth.incomeGrowth}%
+              <span className="text-red-500 font-semibold flex items-center shrink-0">
+                <TrendingDown className="w-3 h-3 mr-0.5" /> {growth.incomeGrowth}%
               </span>
             )}
-            <span className="text-slate-400">vs tháng trước</span>
+            <span className="text-slate-400 truncate">vs trước</span>
           </div>
         </div>
 
         {/* Chi tiêu tháng này */}
-        <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-red-600 uppercase tracking-wider">Chi tháng này</span>
-            <div className="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
-              <ArrowUpRight className="w-4 h-4" />
+        <div className="bg-white p-3 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <span className="text-[10px] sm:text-xs font-semibold text-red-600 uppercase tracking-wider truncate">Chi tháng này</span>
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+                <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </div>
             </div>
+            <p className="text-base sm:text-2xl font-black text-red-600 tracking-tight truncate">
+              -{formatVND(thisMonthExpense)}
+            </p>
           </div>
-          <p className="text-lg md:text-2xl font-black text-red-600 tracking-tight">
-            -{formatVND(thisMonthExpense)}
-          </p>
-          <div className="mt-2 flex items-center gap-1 text-xs">
+          <div className="mt-2 flex items-center gap-1 text-[10px] sm:text-xs pt-1 border-t border-slate-100 truncate">
             {growth.expenseGrowth <= 0 ? (
-              <span className="text-emerald-600 font-semibold flex items-center">
-                <TrendingDown className="w-3.5 h-3.5 mr-0.5" /> {growth.expenseGrowth}%
+              <span className="text-emerald-600 font-semibold flex items-center shrink-0">
+                <TrendingDown className="w-3 h-3 mr-0.5" /> {growth.expenseGrowth}%
               </span>
             ) : (
-              <span className="text-red-500 font-semibold flex items-center">
-                <TrendingUp className="w-3.5 h-3.5 mr-0.5" /> +{growth.expenseGrowth}%
+              <span className="text-red-500 font-semibold flex items-center shrink-0">
+                <TrendingUp className="w-3 h-3 mr-0.5" /> +{growth.expenseGrowth}%
               </span>
             )}
-            <span className="text-slate-400">vs tháng trước</span>
+            <span className="text-slate-400 truncate">vs trước</span>
           </div>
         </div>
 
         {/* Tiết kiệm ròng */}
-        <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">Tích lũy ròng</span>
-            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-              <PiggyBank className="w-4 h-4" />
+        <div className="bg-white p-3 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <span className="text-[10px] sm:text-xs font-semibold text-blue-600 uppercase tracking-wider truncate">Tích lũy ròng</span>
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                <PiggyBank className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </div>
             </div>
+            <p className={`text-base sm:text-2xl font-black tracking-tight truncate ${netSavings >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+              {netSavings >= 0 ? '+' : ''}{formatVND(netSavings)}
+            </p>
           </div>
-          <p className={`text-lg md:text-2xl font-black tracking-tight ${netSavings >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-            {netSavings >= 0 ? '+' : ''}{formatVND(netSavings)}
-          </p>
-          <div className="mt-2 flex items-center text-xs text-slate-500 font-medium">
-            <span>Tỷ lệ tiết kiệm: <strong className="text-slate-700">{savingsRate}%</strong></span>
+          <div className="mt-2 flex items-center text-[10px] sm:text-xs text-slate-500 font-medium pt-1 border-t border-slate-100 truncate">
+            <span className="truncate">Tích lũy: <strong className="text-slate-700">{savingsRate}%</strong></span>
           </div>
         </div>
       </div>
@@ -376,45 +384,45 @@ export const DashboardPage = ({
                   <div 
                     key={tx.id} 
                     onClick={() => onOpenEditTx && onOpenEditTx(tx)}
-                    className="py-3 flex items-center justify-between hover:bg-slate-50/80 px-2 rounded-xl transition-colors cursor-pointer"
+                    className="py-3 flex items-center justify-between hover:bg-slate-50/80 px-2 rounded-xl transition-colors cursor-pointer gap-2"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                       <div 
-                        className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 shadow-2xs"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-white shrink-0 shadow-2xs"
                         style={{ backgroundColor: tx.category_color || typeInfo.defaultBg }}
                       >
-                        <DynamicIcon name={tx.category_icon || typeInfo.icon} className="w-5 h-5" />
+                        <DynamicIcon name={tx.category_icon || typeInfo.icon} className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="font-semibold text-sm text-slate-800">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <h4 className="font-semibold text-xs sm:text-sm text-slate-800 truncate max-w-[140px] sm:max-w-none">
                             {isTransfer ? `Chuyển sang ${tx.to_account_name || 'ví khác'}` : (tx.category_name || typeInfo.label)}
                           </h4>
                           {['LOAN', 'BORROW', 'DEBT_COLLECTION', 'DEBT_REPAYMENT'].includes(tx.type) && (
-                            <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${typeInfo.bgColor} ${typeInfo.textColor}`}>
+                            <span className={`px-1.5 py-0.2 rounded text-[10px] font-bold shrink-0 ${typeInfo.bgColor} ${typeInfo.textColor}`}>
                               {typeInfo.label}
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
-                          <span>{tx.account_name}</span>
+                        <p className="text-[11px] sm:text-xs text-slate-500 flex items-center gap-1.5 mt-0.5 flex-wrap">
+                          <span className="truncate max-w-[80px]">{tx.account_name}</span>
                           <span>•</span>
-                          <span>{formatDate(tx.transaction_date)}</span>
+                          <span className="shrink-0">{formatDate(tx.transaction_date)}</span>
                           {tx.friend_name && (
-                            <span className="text-blue-600 font-semibold text-[11px]">👤 {tx.friend_name}</span>
+                            <span className="text-blue-600 font-semibold text-[10px] sm:text-[11px] truncate max-w-[80px]">👤 {tx.friend_name}</span>
                           )}
                           {tx.note && (
                             <>
                               <span>•</span>
-                              <span className="truncate max-w-[140px] text-slate-400 italic">"{tx.note}"</span>
+                              <span className="truncate max-w-[90px] sm:max-w-[140px] text-slate-400 italic">"{tx.note}"</span>
                             </>
                           )}
                         </p>
                       </div>
                     </div>
 
-                    <div className="text-right shrink-0">
-                      <p className={`font-bold text-sm ${typeInfo.color}`}>
+                    <div className="text-right shrink-0 ml-1">
+                      <p className={`font-bold text-xs sm:text-sm ${typeInfo.color}`}>
                         {typeInfo.prefix}{formatVND(tx.amount)}
                       </p>
                     </div>

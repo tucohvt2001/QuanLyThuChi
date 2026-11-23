@@ -8,8 +8,7 @@ import {
   Edit2, 
   Trash2, 
   History, 
-  ArrowDownLeft, 
-  ArrowUpRight,
+  HandCoins,
   Receipt,
   Heart,
   Briefcase,
@@ -119,30 +118,30 @@ export const FriendsPage = ({
           <p className="text-xs text-slate-400 mt-1">Sẵn sàng để gắn vào chi tiêu & nợ</p>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-purple-600 uppercase tracking-wider">Bạn bè đang nợ bạn</span>
-            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-              <ArrowDownLeft className="w-4 h-4" />
+            <span className="text-xs font-semibold text-purple-600 uppercase tracking-wider truncate">Bạn bè đang nợ bạn</span>
+            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+              <HandCoins className="w-4 h-4" />
             </div>
           </div>
-          <p className="text-2xl font-black text-purple-600 tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-purple-600 tracking-tight truncate">
             {formatVND(totalLoanFromFriends)}
           </p>
-          <p className="text-xs text-slate-400 mt-1">Cần thu hồi</p>
+          <p className="text-xs text-slate-400 mt-1 truncate">Cần thu hồi</p>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-amber-600 uppercase tracking-wider">Bạn đang nợ bạn bè</span>
-            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <ArrowUpRight className="w-4 h-4" />
+            <span className="text-xs font-semibold text-amber-600 uppercase tracking-wider truncate">Bạn đang nợ bạn bè</span>
+            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <Receipt className="w-4 h-4" />
             </div>
           </div>
-          <p className="text-2xl font-black text-amber-600 tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-amber-600 tracking-tight truncate">
             {formatVND(totalDebtToFriends)}
           </p>
-          <p className="text-xs text-slate-400 mt-1">Cần thanh toán</p>
+          <p className="text-xs text-slate-400 mt-1 truncate">Cần thanh toán</p>
         </div>
       </div>
 

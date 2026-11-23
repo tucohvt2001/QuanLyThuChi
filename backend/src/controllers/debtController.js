@@ -133,7 +133,8 @@ export const createDebt = async (req, res) => {
       start_date,
       due_date,
       note = '',
-      create_transaction = false // Có ghi nhận biến động số dư ví hay không
+      create_transaction = false, // Có ghi nhận biến động số dư ví hay không
+      wallet_action = 'PLUS' // 'PLUS' | 'MINUS' | 'NONE'
     } = req.body;
 
     const numAmount = parseFloat(amount);
@@ -154,7 +155,7 @@ export const createDebt = async (req, res) => {
     const newDebt = result.rows[0];
 
     // Nếu người dùng chọn liên kết thay đổi số dư ví ngay lúc tạo:
-    if (create_transaction && account_id) {
+    if (create_transaction && account_id && wallet_action !== 'NONE') {
       if (type === 'LOAN') {
         // Cho vay: trừ tiền ví nguồn (LOAN - Không tính vào Chi tiêu)
         await client.query('UPDATE accounts SET balance = balance - $1, updated_at = NOW() WHERE id = $2', [numAmount, account_id]);
@@ -163,12 +164,21 @@ export const createDebt = async (req, res) => {
           VALUES ('LOAN', $1, $2, $3, $4, $5, $6)
         `, [numAmount, account_id, friend_id || null, newDebt.id, sDate, `Cho ${person_name.trim()} vay tiền: ${note.trim()}`.trim()]);
       } else if (type === 'DEBT') {
-        // Đi vay: cộng tiền vào ví nhận (BORROW - Không tính vào Thu nhập)
-        await client.query('UPDATE accounts SET balance = balance + $1, updated_at = NOW() WHERE id = $2', [numAmount, account_id]);
-        await client.query(`
-          INSERT INTO transactions (type, amount, account_id, friend_id, debt_id, transaction_date, note)
-          VALUES ('BORROW', $1, $2, $3, $4, $5, $6)
-        `, [numAmount, account_id, friend_id || null, newDebt.id, sDate, `Vay tiền từ ${person_name.trim()}: ${note.trim()}`.trim()]);
+        if (wallet_action === 'MINUS') {
+          // Trừ tiền ví (nếu người dùng coi đây là khoản nợ trừ vào ví)
+          await client.query('UPDATE accounts SET balance = balance - $1, updated_at = NOW() WHERE id = $2', [numAmount, account_id]);
+          await client.query(`
+            INSERT INTO transactions (type, amount, account_id, friend_id, debt_id, transaction_date, note)
+            VALUES ('DEBT_REPAYMENT', $1, $2, $3, $4, $5, $6)
+          `, [numAmount, account_id, friend_id || null, newDebt.id, sDate, `Ghi nhận nợ từ ${person_name.trim()}: ${note.trim()}`.trim()]);
+        } else {
+          // Đi vay nhận tiền mặt/CK vào ví (BORROW - Không tính vào Thu nhập)
+          await client.query('UPDATE accounts SET balance = balance + $1, updated_at = NOW() WHERE id = $2', [numAmount, account_id]);
+          await client.query(`
+            INSERT INTO transactions (type, amount, account_id, friend_id, debt_id, transaction_date, note)
+            VALUES ('BORROW', $1, $2, $3, $4, $5, $6)
+          `, [numAmount, account_id, friend_id || null, newDebt.id, sDate, `Vay tiền từ ${person_name.trim()}: ${note.trim()}`.trim()]);
+        }
       }
     }
 

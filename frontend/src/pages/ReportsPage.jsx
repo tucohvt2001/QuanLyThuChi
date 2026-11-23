@@ -82,13 +82,13 @@ export const ReportsPage = ({ data, loading = false, month, year }) => {
         <div className="space-y-4">
           {categoryBreakdown.map((cat) => (
             <div key={cat.id} className="space-y-1.5">
-              <div className="flex items-center justify-between text-xs font-semibold">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-md" style={{ backgroundColor: cat.color }} />
-                  <span className="text-slate-800">{cat.name}</span>
+              <div className="flex items-center justify-between text-xs font-semibold gap-2">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <span className="w-3 h-3 rounded-md shrink-0" style={{ backgroundColor: cat.color }} />
+                  <span className="text-slate-800 truncate">{cat.name}</span>
                 </div>
-                <div className="text-right">
-                  <span className="text-slate-900 font-bold mr-2">{formatVND(cat.total)}</span>
+                <div className="text-right shrink-0">
+                  <span className="text-slate-900 font-bold mr-1.5">{formatVND(cat.total)}</span>
                   <span className="text-slate-500 font-normal">({cat.percentage}%)</span>
                 </div>
               </div>

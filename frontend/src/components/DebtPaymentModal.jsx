@@ -48,12 +48,12 @@ export const DebtPaymentModal = ({ isOpen, onClose, onSavePayment, debt = null, 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div>
-            <h3 className="font-bold text-lg text-slate-800">
+            <h3 className="font-bold text-base sm:text-lg text-slate-800">
               {isLoan ? 'Ghi nhận Thu hồi nợ' : 'Ghi nhận Trả nợ'}
             </h3>
             <p className="text-xs text-slate-500">
@@ -66,7 +66,7 @@ export const DebtPaymentModal = ({ isOpen, onClose, onSavePayment, debt = null, 
         </div>
 
         {/* Body */}
-        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
           {error && (
             <div className="p-3 bg-red-50 text-red-600 rounded-xl text-sm font-medium border border-red-100">
               {error}

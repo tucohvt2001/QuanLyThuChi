@@ -212,40 +212,40 @@ export const TransactionsPage = ({
               return (
                 <div 
                   key={tx.id}
-                  className="p-3.5 md:p-4 flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                  className="p-3 sm:p-4 flex items-center justify-between hover:bg-slate-50 transition-colors group gap-2"
                 >
                   {/* Trái: Icon + Thông tin */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                     <div 
-                      className="w-11 h-11 rounded-xl flex items-center justify-center text-white shrink-0 shadow-xs"
+                      className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center text-white shrink-0 shadow-xs"
                       style={{ backgroundColor: tx.category_color || typeInfo.defaultBg }}
                     >
                       <DynamicIcon name={tx.category_icon || typeInfo.icon} className="w-5 h-5" />
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-sm text-slate-800">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <h4 className="font-bold text-xs sm:text-sm text-slate-800 truncate max-w-[150px] sm:max-w-none">
                           {isTransfer ? `Chuyển sang ${tx.to_account_name || 'ví khác'}` : (tx.category_name || typeInfo.label)}
                         </h4>
                         {isDebtRelated && (
-                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${typeInfo.bgColor} ${typeInfo.textColor}`}>
+                          <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold shrink-0 ${typeInfo.bgColor} ${typeInfo.textColor}`}>
                             {typeInfo.label}
                           </span>
                         )}
                       </div>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 mt-0.5">
-                        <span className="font-medium text-slate-600">{tx.account_name}</span>
+                      <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 text-xs text-slate-500 mt-0.5">
+                        <span className="font-medium text-slate-600 truncate max-w-[90px]">{tx.account_name}</span>
                         <span>•</span>
-                        <span>{formatDate(tx.transaction_date)}</span>
+                        <span className="shrink-0 text-[11px] sm:text-xs">{formatDate(tx.transaction_date)}</span>
                         {tx.friend_name && (
-                          <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-semibold text-[11px]">
+                          <span className="px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 font-semibold text-[10px] sm:text-[11px] truncate max-w-[90px]">
                             👤 {tx.friend_name}
                           </span>
                         )}
                         {tx.note && (
                           <>
                             <span>•</span>
-                            <span className="text-slate-400 italic font-normal">"{tx.note}"</span>
+                            <span className="text-slate-400 italic font-normal truncate max-w-[110px] sm:max-w-[200px]">"{tx.note}"</span>
                           </>
                         )}
                       </div>
@@ -253,25 +253,25 @@ export const TransactionsPage = ({
                   </div>
 
                   {/* Phải: Số tiền + Nút Sửa / Xóa */}
-                  <div className="flex items-center gap-3">
-                    <p className={`font-black text-sm md:text-base ${typeInfo.color}`}>
+                  <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 ml-1">
+                    <p className={`font-black text-xs sm:text-sm md:text-base text-right ${typeInfo.color}`}>
                       {typeInfo.prefix}{formatVND(tx.amount)}
                     </p>
 
-                    <div className="flex items-center gap-1 opacity-80 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-0.5 opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => onOpenEditTx(tx)}
                         title="Chỉnh sửa"
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                        className="p-1 sm:p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(tx.id)}
                         title="Xóa giao dịch"
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        className="p-1 sm:p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </button>
                     </div>
                   </div>

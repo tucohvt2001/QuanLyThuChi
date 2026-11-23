@@ -36,15 +36,15 @@ export const BudgetModal = ({ isOpen, onClose, onSave, categories = [], month, y
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <PiggyBank className="w-4 h-4" />
             </div>
-            <h3 className="font-bold text-lg text-slate-800">
+            <h3 className="font-bold text-base sm:text-lg text-slate-800">
               Hạn mức chi tiêu Tháng {month}/{year}
             </h3>
           </div>
@@ -54,7 +54,7 @@ export const BudgetModal = ({ isOpen, onClose, onSave, categories = [], month, y
         </div>
 
         {/* Body */}
-        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
           {error && (
             <div className="p-3 bg-red-50 text-red-600 rounded-xl text-sm font-medium border border-red-100">
               {error}

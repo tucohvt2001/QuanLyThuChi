@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
   Search, 
-  ArrowDownLeft, 
-  ArrowUpRight, 
   AlertTriangle, 
   CheckCircle2, 
   Clock, 
@@ -12,7 +10,9 @@ import {
   DollarSign, 
   Phone, 
   Calendar,
-  History
+  History,
+  HandCoins,
+  Receipt
 } from 'lucide-react';
 import { api } from '../services/api';
 import { formatVND, formatDate } from '../utils/formatters';
@@ -93,51 +93,51 @@ export const DebtsPage = ({
   return (
     <div className="space-y-6 animate-fadeIn pb-safe-nav md:pb-8">
       {/* 1. Header 3 Thẻ Chỉ số Sổ Nợ */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         {/* Người khác nợ tôi */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-purple-600 uppercase tracking-wider">Người khác nợ tôi</span>
-            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-              <ArrowDownLeft className="w-4 h-4" />
+            <span className="text-xs font-semibold text-purple-600 uppercase tracking-wider truncate">Người khác nợ tôi</span>
+            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+              <HandCoins className="w-4 h-4" />
             </div>
           </div>
-          <p className="text-2xl font-black text-purple-600 tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-purple-600 tracking-tight truncate">
             {formatVND(summary.remainingLoan)}
           </p>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1 truncate">
             Tổng cho vay: {formatVND(summary.totalLoan)}
           </p>
         </div>
 
         {/* Tôi nợ người khác */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-amber-600 uppercase tracking-wider">Tôi nợ người khác</span>
-            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <ArrowUpRight className="w-4 h-4" />
+            <span className="text-xs font-semibold text-amber-600 uppercase tracking-wider truncate">Tôi nợ người khác</span>
+            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <Receipt className="w-4 h-4" />
             </div>
           </div>
-          <p className="text-2xl font-black text-amber-600 tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-amber-600 tracking-tight truncate">
             {formatVND(summary.remainingDebt)}
           </p>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1 truncate">
             Tổng đi vay: {formatVND(summary.totalDebt)}
           </p>
         </div>
 
         {/* Cảnh báo quá hạn */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-red-600 uppercase tracking-wider">Hẹn trả quá hạn</span>
-            <div className="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+            <span className="text-xs font-semibold text-red-600 uppercase tracking-wider truncate">Hẹn trả quá hạn</span>
+            <div className="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
-          <p className="text-2xl font-black text-red-600 tracking-tight">
+          <p className="text-xl sm:text-2xl font-black text-red-600 tracking-tight truncate">
             {summary.overdueCount} khoản
           </p>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1 truncate">
             Cần nhắc nhở / thanh toán ngay
           </p>
         </div>
@@ -184,7 +184,7 @@ export const DebtsPage = ({
               activeFilter === 'LOAN' ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            <ArrowDownLeft className="w-3.5 h-3.5" /> Người khác nợ tôi
+            <HandCoins className="w-3.5 h-3.5" /> Người khác nợ tôi
           </button>
           <button
             onClick={() => setActiveFilter('DEBT')}
@@ -192,7 +192,7 @@ export const DebtsPage = ({
               activeFilter === 'DEBT' ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            <ArrowUpRight className="w-3.5 h-3.5" /> Tôi nợ người khác
+            <Receipt className="w-3.5 h-3.5" /> Tôi nợ người khác
           </button>
 
           {/* Lọc theo Trạng thái */}
@@ -225,32 +225,32 @@ export const DebtsPage = ({
             return (
               <div
                 key={d.id}
-                className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all relative overflow-hidden"
+                className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all relative overflow-hidden"
               >
                 <div>
                   {/* Top Bar: Loại + Trạng thái + Actions */}
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-2.5">
+                  <div className="flex items-start justify-between mb-3 gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white shrink-0 ${
                         isLoan ? 'bg-purple-600' : 'bg-amber-600'
                       }`}>
-                        {isLoan ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
+                        {isLoan ? <HandCoins className="w-4 h-4" /> : <Receipt className="w-4 h-4" />}
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-slate-800 text-base">{d.person_name}</h4>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <h4 className="font-bold text-slate-800 text-sm sm:text-base truncate max-w-[130px] sm:max-w-none">{d.person_name}</h4>
                           {d.friend_name && (
-                            <span className="px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-semibold">
+                            <span className="px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-semibold shrink-0">
                               👤 {d.friend_name}
                             </span>
                           )}
                           {d.is_overdue && (
-                            <span className="px-2 py-0.5 rounded-md bg-red-100 text-red-700 text-[10px] font-bold">
+                            <span className="px-1.5 py-0.5 rounded-md bg-red-100 text-red-700 text-[10px] font-bold shrink-0">
                               Quá hạn!
                             </span>
                           )}
                         </div>
-                        <span className={`text-[11px] font-semibold ${isLoan ? 'text-purple-600' : 'text-amber-600'}`}>
+                        <span className={`text-[11px] font-semibold block truncate ${isLoan ? 'text-purple-600' : 'text-amber-600'}`}>
                           {isLoan ? 'Người khác nợ tôi' : 'Tôi nợ người khác'}
                         </span>
                       </div>
