@@ -100,3 +100,4 @@ export const logout = async (req, res) => {
     message: 'Đã đăng xuất thành công'
   });
 };
+
