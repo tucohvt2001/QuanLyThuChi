@@ -32,7 +32,21 @@ npm run dev
 # Môi trường production
 npm start
 ```
-Server sẽ chạy tại: `http://localhost:5000`
+* API Server: `http://localhost:5000`
+* 📖 **Swagger API Docs**: `http://localhost:5000/api/docs` (hoặc `/docs`)
+
+---
+
+## 📖 Swagger API Documentation
+Truy cập đường dẫn `/api/docs` trên trình duyệt để kiểm tra trực quan và chạy thử tất cả các endpoints:
+- **`GET /api/health`**: Kiểm tra server và Neon DB.
+- **`GET /api/dashboard/summary`**: Dữ liệu tài chính, tài sản ròng.
+- **`CRUD /api/transactions`**: Thu chi và luân chuyển ví.
+- **`CRUD /api/debts`**: Sổ vay nợ & thanh toán nợ.
+- **`CRUD /api/friends`**: Danh bạ bạn bè & đối tác.
+- **`CRUD /api/accounts`**: Tài khoản & ví tiền.
+- **`CRUD /api/categories`**: Danh mục thu chi.
+- **`CRUD /api/budgets`**: Ngân sách hàng tháng.
 
 ---
 

@@ -14,6 +14,8 @@ import dashboardRoutes from './routes/dashboardRoutes.js';
 import debtRoutes from './routes/debtRoutes.js';
 import friendRoutes from './routes/friendRoutes.js';
 import { pool } from './config/db.js';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerDocument } from './config/swagger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,6 +40,11 @@ app.use('/api/budgets', budgetRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/debts', debtRoutes);
 app.use('/api/friends', friendRoutes);
+
+// Swagger API Documentation UI
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.get('/docs', (req, res) => res.redirect('/api/docs'));
+app.get('/swagger', (req, res) => res.redirect('/api/docs'));
 
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
@@ -77,5 +84,6 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Backend Server đang chạy tại http://localhost:${PORT}`);
+  console.log(`📖 Swagger API Docs đang mở tại: http://localhost:${PORT}/api/docs`);
 });
 
