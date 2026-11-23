@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { X, PiggyBank, Loader2 } from 'lucide-react';
-import { DynamicIcon, formatVND } from '../utils/formatters';
+import { DynamicIcon, formatVND, formatNumberWithDots, parseNumberFromDots } from '../utils/formatters';
 
 export const BudgetModal = ({ isOpen, onClose, onSave, categories = [], month, year, initialCategory = null }) => {
   if (!isOpen) return null;
 
   const expenseCategories = categories.filter(c => c.type === 'EXPENSE');
   const [categoryId, setCategoryId] = useState(initialCategory ? String(initialCategory.category_id || initialCategory.id) : (expenseCategories[0]?.id ? String(expenseCategories[0].id) : ''));
-  const [amount, setAmount] = useState(initialCategory?.budget_amount ? String(Math.round(initialCategory.budget_amount)) : '');
+  const [amount, setAmount] = useState(initialCategory?.budget_amount ? formatNumberWithDots(initialCategory.budget_amount) : '');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const numAmount = parseFloat(amount);
+    const numAmount = parseNumberFromDots(amount);
     if (!categoryId || !numAmount || numAmount <= 0) {
       setError('Vui lòng chọn danh mục và nhập hạn mức ngân sách hợp lệ');
       return;
@@ -82,12 +82,12 @@ export const BudgetModal = ({ isOpen, onClose, onSave, categories = [], month, y
             <label className="block text-xs font-semibold text-slate-500 mb-1.5">Hạn mức tối đa (VNĐ / Tháng)</label>
             <div className="relative">
               <input
-                type="number"
-                step="any"
+                type="text"
+                inputMode="numeric"
                 required
                 placeholder="0"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => setAmount(formatNumberWithDots(e.target.value))}
                 className="w-full text-xl font-bold px-4 py-2.5 rounded-xl border border-slate-200 text-emerald-600 focus:border-emerald-500 outline-none"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">₫</span>

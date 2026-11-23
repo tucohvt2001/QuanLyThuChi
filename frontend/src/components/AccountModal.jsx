@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Wallet, Landmark, Smartphone, PiggyBank, CreditCard, Loader2 } from 'lucide-react';
-import { DynamicIcon, AVAILABLE_ICONS, AVAILABLE_COLORS, formatVND } from '../utils/formatters';
+import { DynamicIcon, AVAILABLE_ICONS, AVAILABLE_COLORS, formatVND, formatNumberWithDots, parseNumberFromDots } from '../utils/formatters';
 
 export const AccountModal = ({ isOpen, onClose, onSave, editingAccount }) => {
   if (!isOpen) return null;
@@ -26,7 +26,7 @@ export const AccountModal = ({ isOpen, onClose, onSave, editingAccount }) => {
     if (editingAccount) {
       setName(editingAccount.name || '');
       setType(editingAccount.type || 'CASH');
-      setInitialBalance(editingAccount.initial_balance ? String(Math.round(editingAccount.initial_balance)) : '0');
+      setInitialBalance(editingAccount.initial_balance ? formatNumberWithDots(editingAccount.initial_balance) : '0');
       setAccountNumber(editingAccount.account_number || '');
       setIcon(editingAccount.icon || 'Wallet');
       setColor(editingAccount.color || '#16a34a');
@@ -63,7 +63,7 @@ export const AccountModal = ({ isOpen, onClose, onSave, editingAccount }) => {
         id: editingAccount?.id,
         name: name.trim(),
         type,
-        initial_balance: parseFloat(initialBalance) || 0,
+        initial_balance: parseNumberFromDots(initialBalance) || 0,
         account_number: accountNumber.trim(),
         icon,
         color
@@ -136,11 +136,11 @@ export const AccountModal = ({ isOpen, onClose, onSave, editingAccount }) => {
             <div>
               <label className="block text-xs font-semibold text-slate-500 mb-1.5">Số dư ban đầu (VNĐ)</label>
               <input
-                type="number"
-                step="any"
+                type="text"
+                inputMode="numeric"
                 placeholder="0"
                 value={initialBalance}
-                onChange={(e) => setInitialBalance(e.target.value)}
+                onChange={(e) => setInitialBalance(formatNumberWithDots(e.target.value))}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold focus:border-emerald-500 outline-none"
               />
               {initialBalance && !isNaN(initialBalance) && (

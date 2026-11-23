@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, ArrowDownCircle, ArrowUpCircle, ArrowRightLeft, Calendar, FileText, Tag, Wallet, Users, Loader2 } from 'lucide-react';
-import { DynamicIcon, formatVND } from '../utils/formatters';
+import { DynamicIcon, formatVND, formatNumberWithDots, parseNumberFromDots } from '../utils/formatters';
 
 export const TransactionModal = ({ isOpen, onClose, onSave, editingTransaction, accounts = [], categories = [], friends = [] }) => {
   if (!isOpen) return null;
@@ -19,7 +19,7 @@ export const TransactionModal = ({ isOpen, onClose, onSave, editingTransaction, 
   useEffect(() => {
     if (editingTransaction) {
       setType(editingTransaction.type || 'EXPENSE');
-      setAmount(editingTransaction.amount ? String(Math.round(editingTransaction.amount)) : '');
+      setAmount(editingTransaction.amount ? formatNumberWithDots(editingTransaction.amount) : '');
       setAccountId(editingTransaction.account_id ? String(editingTransaction.account_id) : '');
       setToAccountId(editingTransaction.to_account_id ? String(editingTransaction.to_account_id) : '');
       setCategoryId(editingTransaction.category_id ? String(editingTransaction.category_id) : '');
@@ -55,7 +55,7 @@ export const TransactionModal = ({ isOpen, onClose, onSave, editingTransaction, 
     e.preventDefault();
     setError('');
 
-    const numAmount = parseFloat(amount);
+    const numAmount = parseNumberFromDots(amount);
     if (!numAmount || numAmount <= 0) {
       setError('Vui lòng nhập số tiền lớn hơn 0');
       return;
@@ -166,12 +166,12 @@ export const TransactionModal = ({ isOpen, onClose, onSave, editingTransaction, 
             <label className="block text-xs font-semibold text-slate-500 mb-1.5">Số tiền (VNĐ)</label>
             <div className="relative">
               <input
-                type="number"
-                step="any"
+                type="text"
+                inputMode="numeric"
                 required
                 placeholder="0"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => setAmount(formatNumberWithDots(e.target.value))}
                 className={`w-full text-2xl font-bold px-4 py-3 rounded-xl border outline-none transition-all ${
                   type === 'EXPENSE' 
                     ? 'text-red-600 focus:border-red-500 bg-red-50/20' 

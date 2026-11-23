@@ -14,7 +14,7 @@ import {
   BookOpen,
   Loader2
 } from 'lucide-react';
-import { formatVND } from '../utils/formatters';
+import { formatVND, formatNumberWithDots, parseNumberFromDots } from '../utils/formatters';
 
 export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [], friends = [] }) => {
   if (!isOpen) return null;
@@ -38,7 +38,7 @@ export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [],
       setPersonName(editingDebt.person_name || '');
       setPhone(editingDebt.phone || '');
       setFriendId(editingDebt.friend_id ? String(editingDebt.friend_id) : '');
-      setAmount(editingDebt.amount ? String(Math.round(editingDebt.amount)) : '');
+      setAmount(editingDebt.amount ? formatNumberWithDots(editingDebt.amount) : '');
       setAccountId(editingDebt.account_id ? String(editingDebt.account_id) : (accounts[0]?.id ? String(accounts[0].id) : ''));
       setStartDate(editingDebt.start_date ? new Date(editingDebt.start_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
       setDueDate(editingDebt.due_date ? new Date(editingDebt.due_date).toISOString().split('T')[0] : '');
@@ -72,7 +72,7 @@ export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [],
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const numAmount = parseFloat(amount);
+    const numAmount = parseNumberFromDots(amount);
 
     if (!personName.trim()) {
       setError('Vui lòng nhập họ tên người liên quan');
@@ -311,13 +311,13 @@ export const DebtModal = ({ isOpen, onClose, onSave, editingDebt, accounts = [],
             <label className="block text-xs font-semibold text-slate-500 mb-1.5">Số tiền vay / nợ (VNĐ) *</label>
             <div className="relative">
               <input
-                type="number"
-                step="any"
+                type="text"
+                inputMode="numeric"
                 required
                 disabled={!!editingDebt}
                 placeholder="0"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => setAmount(formatNumberWithDots(e.target.value))}
                 className="w-full text-2xl font-bold px-4 py-2.5 rounded-xl border border-slate-200 text-slate-900 focus:border-purple-500 outline-none"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">₫</span>

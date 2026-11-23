@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, ArrowRightLeft, Loader2 } from 'lucide-react';
-import { formatVND } from '../utils/formatters';
+import { formatVND, formatNumberWithDots, parseNumberFromDots } from '../utils/formatters';
 
 export const TransferModal = ({ isOpen, onClose, onTransfer, accounts = [] }) => {
   if (!isOpen) return null;
@@ -15,7 +15,7 @@ export const TransferModal = ({ isOpen, onClose, onTransfer, accounts = [] }) =>
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const numAmount = parseFloat(amount);
+    const numAmount = parseNumberFromDots(amount);
     if (!numAmount || numAmount <= 0) {
       setError('Vui lòng nhập số tiền hợp lệ');
       return;
@@ -103,12 +103,12 @@ export const TransferModal = ({ isOpen, onClose, onTransfer, accounts = [] }) =>
             <label className="block text-xs font-semibold text-slate-500 mb-1.5">Số tiền chuyển (VNĐ)</label>
             <div className="relative">
               <input
-                type="number"
-                step="any"
+                type="text"
+                inputMode="numeric"
                 required
                 placeholder="0"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => setAmount(formatNumberWithDots(e.target.value))}
                 className="w-full text-xl font-bold px-4 py-2.5 rounded-xl border border-slate-200 text-blue-600 focus:border-blue-500 outline-none"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">₫</span>

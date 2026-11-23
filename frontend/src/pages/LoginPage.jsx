@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, User, Eye, EyeOff, Loader2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react';
 import { api } from '../services/api';
 
 export const LoginPage = ({ onLoginSuccess }) => {
@@ -31,12 +31,6 @@ export const LoginPage = ({ onLoginSuccess }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFillDemo = () => {
-    setUsername('admin');
-    setPassword('admin@123');
-    setError('');
   };
 
   return (
@@ -76,7 +70,7 @@ export const LoginPage = ({ onLoginSuccess }) => {
                 <input
                   type="text"
                   required
-                  placeholder="admin"
+                  placeholder="Nhập tên đăng nhập"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 outline-none transition-all"
@@ -94,7 +88,7 @@ export const LoginPage = ({ onLoginSuccess }) => {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
-                  placeholder="admin@123"
+                  placeholder="Nhập mật khẩu"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 outline-none transition-all"
@@ -130,26 +124,6 @@ export const LoginPage = ({ onLoginSuccess }) => {
               </button>
             </div>
           </form>
-
-          {/* Quick Demo Fill Box */}
-          <div className="mt-6 pt-5 border-t border-slate-100">
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
-              <div className="flex items-center gap-2 text-xs text-slate-600">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                <div>
-                  <p className="font-semibold text-slate-800">Tài khoản mặc định:</p>
-                  <p className="text-[11px] text-slate-500 font-mono">admin / admin@123</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleFillDemo}
-                className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition-colors"
-              >
-                Điền nhanh
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Footer info */}

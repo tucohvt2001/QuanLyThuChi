@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { X, CheckCircle2, Wallet, BookOpen, Info, Loader2 } from 'lucide-react';
-import { formatVND } from '../utils/formatters';
+import { formatVND, formatNumberWithDots, parseNumberFromDots } from '../utils/formatters';
 
 export const DebtPaymentModal = ({ isOpen, onClose, onSavePayment, debt = null, accounts = [] }) => {
   if (!isOpen || !debt) return null;
 
   const remaining = parseFloat(debt.amount) - parseFloat(debt.paid_amount);
-  const [amount, setAmount] = useState(String(Math.round(remaining)));
+  const [amount, setAmount] = useState(formatNumberWithDots(Math.round(remaining)));
   const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
   const [paymentMethod, setPaymentMethod] = useState('WALLET'); // 'WALLET' | 'RECORD_ONLY'
   const [accountId, setAccountId] = useState(accounts[0]?.id ? String(accounts[0].id) : '');
@@ -19,7 +19,7 @@ export const DebtPaymentModal = ({ isOpen, onClose, onSavePayment, debt = null, 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const numAmount = parseFloat(amount);
+    const numAmount = parseNumberFromDots(amount);
     if (!numAmount || numAmount <= 0) {
       setError('Vui lòng nhập số tiền thanh toán hợp lệ');
       return;
@@ -97,7 +97,7 @@ export const DebtPaymentModal = ({ isOpen, onClose, onSavePayment, debt = null, 
               </label>
               <button
                 type="button"
-                onClick={() => setAmount(String(Math.round(remaining)))}
+                onClick={() => setAmount(formatNumberWithDots(Math.round(remaining)))}
                 className="text-xs text-purple-600 hover:text-purple-700 font-semibold"
               >
                 Tất toán hết ({formatVND(remaining)})
@@ -105,12 +105,12 @@ export const DebtPaymentModal = ({ isOpen, onClose, onSavePayment, debt = null, 
             </div>
             <div className="relative">
               <input
-                type="number"
-                step="any"
+                type="text"
+                inputMode="numeric"
                 required
                 placeholder="0"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => setAmount(formatNumberWithDots(e.target.value))}
                 className="w-full text-xl font-bold px-4 py-2.5 rounded-xl border border-slate-200 text-purple-600 focus:border-purple-500 outline-none"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">₫</span>

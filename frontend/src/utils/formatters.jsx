@@ -11,6 +11,21 @@ export const formatVND = (amount) => {
   }).format(amount);
 };
 
+// Định dạng số có dấu chấm phân cách hàng nghìn khi người dùng nhập liệu (VD: 1000000 -> "1.000.000")
+export const formatNumberWithDots = (val) => {
+  if (val === undefined || val === null || val === '') return '';
+  const clean = String(val).replace(/\D/g, '');
+  if (!clean) return '';
+  return new Intl.NumberFormat('vi-VN').format(Number(clean));
+};
+
+// Chuyển chuỗi có dấu phân cách hàng nghìn về số nguyên chuẩn (VD: "1.000.000" -> 1000000)
+export const parseNumberFromDots = (val) => {
+  if (val === undefined || val === null || val === '') return 0;
+  const clean = String(val).replace(/\D/g, '');
+  return clean ? Number(clean) : 0;
+};
+
 // Format ngày tháng tiếng Việt
 export const formatDate = (dateString) => {
   if (!dateString) return '';
