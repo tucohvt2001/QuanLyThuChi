@@ -1,0 +1,20 @@
+{
+  "short_name": "ThuChi 247",
+  "name": "Quản Lý Thu Chi Cá Nhân",
+  "description": "Ứng dụng quản lý thu chi cá nhân thông minh, hoạt động mượt mà trên Web và Điện thoại di động",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#f8fafc",
+  "theme_color": "#16a34a",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "categories": ["finance", "productivity"]
+}
+
